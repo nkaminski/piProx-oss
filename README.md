@@ -18,4 +18,4 @@ printhex Usage:
 	
       	./printhex
 	
-	and present a card. The data returned from the card will be displayed along with (if the card is an HID Corporate 1000 card) the facility code and user ID.
+and present a card. The data returned from the card will be displayed along with (if the card is an HID Corporate 1000 card) the facility code and user ID.
