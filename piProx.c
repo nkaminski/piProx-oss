@@ -32,8 +32,8 @@
 #define DRIVER_DESC   "Weigand Proximity Reader Driver for Raspberry Pi"
 #define MOD_VERSION "0.9.1"
 #define SHORT_DESC "prox"
-#define HIGH_INTERRUPT_PIN 22
-#define LOW_INTERRUPT_PIN 23 
+#define HIGH_INTERRUPT_PIN 18
+#define LOW_INTERRUPT_PIN 25 
 #define PIPROX_MAX_DATA_LEN 6
 
 // text below will be seen in 'cat /proc/interrupt' command
