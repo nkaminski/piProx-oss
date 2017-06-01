@@ -27,7 +27,7 @@ int main(int argc, char **argv){
     }
     
     while(1){
-        print("Waiting for card...\n");
+        printf("Waiting for card...\n");
         /* Read a card */
         rv = piprox_read(&prox);
         printf("Read %d bytes from reader\n", rv);
