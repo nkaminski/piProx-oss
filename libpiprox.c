@@ -55,7 +55,7 @@ int piprox_print(piprox_state_t *st, int fd){
         }
         out_len += rv;
         /* Last iteration */
-        if(i == st->card_data_len){
+        if(i+1 == st->card_data_len){
             if((rv = dprintf(fd,"\n")) < 0){
                 return rv;
             }
