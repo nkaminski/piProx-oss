@@ -19,7 +19,7 @@
 
    Returns -1 on failure and 0 on success
  */
-int piprox_open(piprox_state_t *st, char *dev){
+int piprox_open(piprox_state_t *st, const char *dev){
     /* initialize length to zero */
     st->card_data_len = 0;
     /* attempt to open the device node */
@@ -30,6 +30,39 @@ int piprox_open(piprox_state_t *st, char *dev){
     } else {
         return 0;
     }
+}
+
+/* Closes the device fd associated with the state `st` */
+void piprox_close(piprox_state_t *st){
+    if(st->fd > 0 ){
+        close(st->fd);
+    }
+}
+
+/* Prints the contentents of the internal state to the supplied fd.
+
+    Return negative values on failure and the number of printed characters on success.
+*/
+int piprox_print(piprox_state_t *st, int fd){
+    int i,rv, out_len;
+    if((rv = dprintf(fd, "--piprox state: fd=%d, length=%zu--\nData:",st->fd,st->card_data_len)) < 0){
+        return rv;
+    }
+    out_len = rv;
+    for(i=0;i<st->card_data_len;i++){
+        if((rv = dprintf(fd,"%x",st->card_data[i])) < 0){
+            return rv;
+        }
+        out_len += rv;
+        /* Last iteration */
+        if(i == st->card_data_len){
+            if((rv = dprintf(fd,"\n")) < 0){
+                return rv;
+            }
+            out_len += rv;
+        }
+    }
+    return out_len;
 }
 
 /* Reads card data from the receiver into the internal state, blocks until a card is presented.
@@ -60,7 +93,7 @@ ssize_t piprox_read(piprox_state_t *st){
 int piprox_hidcorp1k_parse(piprox_state_t *st, piprox_hidcorp1k_t *res){
     int i,f=0;
     uint8_t paritya=0,parityb=0,parityc=0;
-    if(size<5){
+    if(st->card_data_len<5){
         return 0;
     }
     res->facility = (((uint16_t)st->card_data[4] << 11) | ((uint16_t)st->card_data[3] << 3) | (st->card_data[2] >> 5)) & 0x0FFF;
@@ -98,7 +131,7 @@ int piprox_hidcorp1k_parse(piprox_state_t *st, piprox_hidcorp1k_t *res){
         goto fail;
     }
 fail:	if(f < 0){
-            return f
+            return f;
         } else {
             return 1;
         }

@@ -39,8 +39,10 @@ typedef struct {
 
 /* function protos */
 
-int piprox_open(piprox_state_t*, char*);
+int piprox_open(piprox_state_t*, const char*);
+void piprox_close(piprox_state_t*);
 ssize_t piprox_read(piprox_state_t*);
+int piprox_print(piprox_state_t*, int);
 int piprox_hidcorp1k_parse(piprox_state_t*, piprox_hidcorp1k_t*);
 void piprox_close(piprox_state_t*);
 

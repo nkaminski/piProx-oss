@@ -8,5 +8,5 @@ clean:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 	rm printhex
 
-printhex: printhex.c
-	gcc -o printhex printhex.c
+printhex: libpiprox.c printhex.c
+	gcc -o printhex libpiprox.c printhex.c

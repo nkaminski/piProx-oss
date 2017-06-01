@@ -23,6 +23,7 @@ int main(int argc, char **argv){
     rv = piprox_open(&prox, devnode);
     if(rv < 0){
         fprintf(stderr, "piprox_open failed, return code is %d\n", rv);
+        return 1;
     }
     
     while(1){
@@ -31,14 +32,17 @@ int main(int argc, char **argv){
         printf("Read %d bytes from reader\n", rv);
         if(rv > 0){
             /* If the read was successful, print the data and attempt a corp1k decode */
-            piprox_print(&prox, stdout);
+            piprox_print(&prox, STDOUT_FILENO);
             rv = piprox_hidcorp1k_parse(&prox, &hidcorp1k);
             if(rv == 0){
                 printf("Card data is smaller than 5 bytes\n");
             } else if( rv < 0){
                 printf("Parity error on parity check %d in HID Corp. 1000 decoding\n", -rv);
             } else{
-                printf("HID Corporate 1000 decoding done, facility=%d cardnum=%d\n", hidcorp1k->facility, hidcorp1k->cardnum);
+                printf("HID Corporate 1000 decoding done, facility=%d cardnum=%d\n", hidcorp1k.facility, hidcorp1k.cardnum);
             }
         }
+    }
+return 0;
+}
 
