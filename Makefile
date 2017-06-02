@@ -10,3 +10,6 @@ clean:
 
 printhex: libpiprox.c printhex.c
 	$(CC) -o printhex libpiprox.c printhex.c
+
+http-client: libpiprox.c http-client.c
+	$(CC) -lcurl -o http-client libpiprox.c http-client.c
