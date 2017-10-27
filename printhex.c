@@ -20,7 +20,12 @@ int main(int argc, char **argv){
     piprox_hidcorp1k_t hidcorp1k;
     int rv;
     /* open the device node and initialize the internal state */
-    rv = piprox_open(&prox, devnode);
+    if(argc > 1){
+        rv = piprox_open(&prox, argv[1]);
+    }
+    else{
+        rv = piprox_open(&prox, devnode);
+    }
     if(rv < 0){
         fprintf(stderr, "piprox_open failed, return code is %d\n", rv);
         return 1;
@@ -37,12 +42,14 @@ int main(int argc, char **argv){
             rv = piprox_hidcorp1k_parse(&prox, &hidcorp1k);
             if(rv == 0){
                 printf("Card data is smaller than 5 bytes\n");
-            } else if( rv < 0){
+            } else if(rv < 0){
                 printf("Parity error on parity check %d in HID Corp. 1000 decoding\n", -rv);
             } else{
                 printf("HID Corporate 1000 decoding done, facility=%d cardnum=%d\n", hidcorp1k.facility, hidcorp1k.cardnum);
             }
-        }
+        } else {
+	    return 1;
+	}
     }
 return 0;
 }

@@ -98,27 +98,33 @@ int piprox_hidcorp1k_parse(piprox_state_t *st, piprox_hidcorp1k_t *res){
     }
     res->facility = (((uint16_t)st->card_data[4] << 11) | ((uint16_t)st->card_data[3] << 3) | (st->card_data[2] >> 5)) & 0x0FFF;
     res->cardnum = (((uint32_t)st->card_data[2] << 15) | ((uint32_t)st->card_data[1] << 7) | ((uint32_t)st->card_data[0] >> 1)) & 0x000FFFFF;
-    /* Parity scheme (using ONE indexing):
-       Even  2  3, 4, 6, 7, 9, 10,12,13,15,16,18,19,21,22,24,25,27,28,30,31,33,34
-       Odd  35 2, 3, 5, 6, 8, 9, 11,12,14,15,17,18,20,21,23,24,26,27,29,30,32,33
-       Odd  1  2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35
-     */
-    paritya = GETBIT(st->card_data,1);
-    for(i=2;i<34;i=i+3){
+    /* Parity scheme (using ONE indexing, bit 1 is the MSB):
+       Even  2, 3, 4, 6, 7, 9, 10,12,13,15,16,18,19,21,22,24,25,27,28,30,31,33,34
+       Odd  35, 2, 3, 5, 6, 8, 9, 11,12,14,15,17,18,20,21,23,24,26,27,29,30,32,33
+       Odd  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35
+
+       Parity scheme (using ZERO indexing, bit 0 is the LSB):
+       Even 1, 2, 4, 5, 7, 8, 10, 11, 13, 14, 16, 17, 19, 20, 22, 23, 25, 26, 28, 29, 31, 32, 33
+       Odd  0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33
+       Odd  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34
+    */
+
+    paritya = GETBIT(st->card_data,33);
+    for(i=1;i<34;i=i+3){
         paritya ^= GETBIT(st->card_data,i);
         paritya ^= GETBIT(st->card_data,i+1);
 
     }
-    if((paritya % 2) == 1){
+    if(paritya == 1){
         f=-1;
         goto fail;
     }
-    parityb = GETBIT(st->card_data,34);
-    for(i=1;i<34;i=i+3){
+    parityb = GETBIT(st->card_data,0);
+    for(i=2;i<34;i=i+3){
         parityb ^= GETBIT(st->card_data,i);
         parityb ^= GETBIT(st->card_data,i+1);
     }
-    if((parityb % 2) == 0){
+    if(parityb == 0){
         f=-2;
         goto fail;
 
@@ -126,7 +132,7 @@ int piprox_hidcorp1k_parse(piprox_state_t *st, piprox_hidcorp1k_t *res){
     for(i=0;i<35;i++){
         parityc ^= GETBIT(st->card_data,i);
     }
-    if((parityc % 2) == 0){
+    if(parityc == 0){
         f=-3;
         goto fail;
     }
