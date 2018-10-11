@@ -3,9 +3,9 @@ obj-m += piProx.o
 all: modules printhex
  
 modules: piProx.c
-	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules 
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(shell pwd) modules 
 clean:
-	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(shell pwd) clean
 	$(RM) printhex
 
 printhex: libpiprox.c printhex.c
