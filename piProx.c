@@ -190,7 +190,7 @@ static void bit_set(char *buf, short int loc){
 	buf[byte] |= (1<<bit);	
 }
 // ISR Functions
-void piProx_timer_callback( unsigned long data )
+void piProx_timer_callback( struct timer_list *event )
 {
 	size_t bytes;
 	int i;
@@ -259,7 +259,7 @@ static irqreturn_t low_ISR(int irq, void *dev_id, struct pt_regs *regs) {
 
 //Initializes timer
 void piProx_timer_init(void){
-	setup_timer( &timer, piProx_timer_callback, 0 );
+	timer_setup( &timer, piProx_timer_callback, 0 );
 	printk(KERN_NOTICE "piProx: Starting timer\n");
 }
 
