@@ -50,7 +50,7 @@ int piprox_print(piprox_state_t *st, int fd){
     }
     out_len = rv;
     for(i=0;i<st->card_data_len;i++){
-        if((rv = dprintf(fd,"%x",st->card_data[i])) < 0){
+        if((rv = dprintf(fd,"%02x",st->card_data[i])) < 0){
             return rv;
         }
         out_len += rv;
